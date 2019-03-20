@@ -1,0 +1,6 @@
+[submodule "lib/fcontrol"]
+	path = lib/fcontrol
+	url = https://github.com/munozyanez/fcontrol.git
+[submodule "lib/i-plot"]
+	path = lib/i-plot
+	url = https://github.com/munozyanez/i-plot.git
