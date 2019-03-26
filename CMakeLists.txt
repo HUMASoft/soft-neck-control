@@ -1,4 +1,4 @@
-project(fcontrol-example)
+project(soft-neck-control)
 
 cmake_minimum_required(VERSION 2.8)
 
@@ -11,6 +11,10 @@ aux_source_directory(examples SRC_LIST)
 
 
 add_subdirectory(lib)
+#revisar la forma de incluir kinematics
+INCLUDE_DIRECTORIES(kinematics)
+add_library(kinematics kinematics/Kinematics.cpp)
+set(SUBDIR_LINK_NAMES ${SUBDIR_LINK_NAMES} kinematics)
 
 
 
@@ -27,7 +31,7 @@ foreach( testsourcefile ${SRC_LIST} )
     add_executable( ${testname} ${testsourcefile} )
     message ("Including executable: " ${testname})
     # Make sure YourLib is linked to each app
-    target_link_libraries( ${testname} fcontrol ${SUBDIR_LINK_NAMES} )
+    target_link_libraries( ${testname} ${SUBDIR_LINK_NAMES} )
 endforeach( testsourcefile ${APP_SOURCES} )
 
 
