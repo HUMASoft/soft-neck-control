@@ -31,11 +31,7 @@ int main ()
      m3.Reset();
      m3.SwitchOn();
 
-
-//     m3.Setup_Torque_Mode();
-//     m1.Setup_Torque_Mode();
-//     m2.Setup_Torque_Mode();
-
+    //set velocity and aceleration (rads/s)
      m1.SetupPositionMode(1,1);
      m2.SetupPositionMode(1,1);
      m3.SetupPositionMode(1,1);
