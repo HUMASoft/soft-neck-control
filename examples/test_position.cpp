@@ -43,5 +43,4 @@ int main ()
         cout<<"vel1: "<<vel1<<", "<<"vel2: "<<vel2<<", "<<"vel3: "<<vel3<<endl;
         sleep(1);
     }
-
 }

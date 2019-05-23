@@ -1,3 +1,4 @@
+
 #include "Cia402device.h"
 #include "CiA301CommPort.h"
 #include "SocketCanPort.h"
@@ -22,33 +23,34 @@ int main ()
 
     m31.Setup_Torque_Mode();
 
+    double tspeed = 3;
+    double cs = 0; //control signal
+    double v = 0;
 
-cout<<"torque 0"<<endl;
-    m31.SetTorque(0);
+    //cout<<m31.GetVelocity()<<endl;
 
-    sleep(5);
-
-    cout<<m31.GetVelocity()<<endl;
-
-    double dts=0.01;
+    double dts=0.001;
 
     ToolsFControl tools;
     tools.SetSamplingTime(dts);
-    //
-cout<<"torque 0.5"<<endl;
 
-    m31.SetTorque(-1);
 
-    for(double t=0; t<2; t+=dts){
-         //cout<<m31.GetVelocity()<<endl;
-         tools.WaitSamplingTime();
+
+    for(double t=0; t<5; t+=dts){
+
+
+        v = m31.GetVelocity();
+        cs = tspeed - v;
+        m31.SetTorque(cs/10000);
+        cout<<v<<endl;
+        tools.WaitSamplingTime();
+//        cout<<error<<endl;
 
     }
 
-    cout<<"torque 0"<<endl;
-   m31.SetTorque(0.0);
-      m31.SetTorque(0.0);
-         m31.SetTorque(0.0);
+    //m31.SetTorque(0);
+
+    m31.SetupPositionMode(1,1);
    sleep(1);
 
 }
