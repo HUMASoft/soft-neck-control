@@ -41,7 +41,7 @@ int main ()
 
         v = m31.GetVelocity();
         cs = tspeed - v;
-        m31.SetTorque(cs/10000);
+        m31.SetTorque(cs);
         cout<<v<<endl;
         tools.WaitSamplingTime();
 //        cout<<error<<endl;

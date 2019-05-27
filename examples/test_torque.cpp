@@ -30,25 +30,25 @@ cout<<"torque 0"<<endl;
 
     cout<<m31.GetVelocity()<<endl;
 
-    double dts=0.01;
+//    double dts=0.01;
 
-    ToolsFControl tools;
-    tools.SetSamplingTime(dts);
-    //
-cout<<"torque 0.5"<<endl;
+//    ToolsFControl tools;
+//    tools.SetSamplingTime(dts);
+//    //
+//cout<<"torque 0.5"<<endl;
 
-    m31.SetTorque(-1);
+//    m31.SetTorque(-1);
 
-    for(double t=0; t<2; t+=dts){
-         //cout<<m31.GetVelocity()<<endl;
-         tools.WaitSamplingTime();
+//    for(double t=0; t<2; t+=dts){
+//         cout<<m31.GetVelocity()<<endl;
+//         tools.WaitSamplingTime();
 
-    }
+//    }
 
-    cout<<"torque 0"<<endl;
-   m31.SetTorque(0.0);
-      m31.SetTorque(0.0);
-         m31.SetTorque(0.0);
-   sleep(1);
+//    cout<<"torque 0"<<endl;
+//   m31.SetTorque(0.0);
+//      m31.SetTorque(0.0);
+//         m31.SetTorque(0.0);
+//   sleep(1);
 
 }
