@@ -27,42 +27,44 @@ int main ()
     m31.Reset();
     m31.SwitchOn();
 
-    //m31.Setup_Torque_Mode();
+    //m31.SetupPositionMode(1,1);
     m31.Setup_Velocity_Mode(0,1);
 
-    double tspeed = 3;
+    double target_position = 1;
     double cs = 0; //control signal
-    double v = 0;
-
-    //cout<<m31.GetVelocity()<<endl;
+    double p = 0;
 
 
     ToolsFControl tools;
     tools.SetSamplingTime(dts);
 
 
-    //m31.SetTorque(0.5);
-    m31.SetVelocity(1);
+    //m31.SetPosition(0);
 
     for(double t=0; t<3; t+=dts){
 
 
-        v = m31.GetVelocity();
-        cout<<"getvel"<<endl;
-        cs = (tspeed - v) > pid;
+        p = m31.GetPosition();
+        cs = (target_position - p) > pid;
         m31.SetVelocity(cs);
-        cout<<"t: "<<t<<", v: "<<v<<endl;
+        cout<<"t: "<<t<<", p: "<<p<<endl;
         cout<<"cs: "<<cs<<endl;
         tools.WaitSamplingTime();
 
     }
-    m31.SetVelocity(0);
+    //m31.SetVelocity(0);
+
     //m31.SetTorque(0);
     //sleep(1);
     //m31.SetupPositionMode(2,3);
+    //m31.SetPosition(0);
     sleep(1);
+
+    //cout<<"final position: "<<m31.GetPosition();
+
     //m31.SwitchOff();
 
 
 
 }
+

@@ -13,7 +13,7 @@ int main ()
 
     CiA402SetupData sd31(2048,24,0.001, 0.144);
 
-    CiA402Device m31 (31, &pm31, sd31);
+    CiA402Device m31 (31, &pm31, &sd31);
 
 
     //    Motor setup

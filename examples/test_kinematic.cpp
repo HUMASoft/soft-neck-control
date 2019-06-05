@@ -19,9 +19,9 @@ int main(){
     CiA402SetupData sd2 = sd1;
     CiA402SetupData sd3 = sd1;
 
-    CiA402Device m1 (1, &pm1, sd1);
-    CiA402Device m2 (2, &pm2, sd2);
-    CiA402Device m3 (3, &pm3, sd3);
+    CiA402Device m1 (1, &pm1, &sd1);
+    CiA402Device m2 (2, &pm2, &sd2);
+    CiA402Device m3 (3, &pm3, &sd3);
 
     //--Neck Kinematics--
     double l0=0.1090;

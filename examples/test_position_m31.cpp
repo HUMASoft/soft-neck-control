@@ -10,10 +10,16 @@ int main ()
 {
     //--Can port communications--
     SocketCanPort pm31("can1");
+    SocketCanPort pm32("can1");
+    SocketCanPort pm33("can1");
 
     CiA402SetupData sd31(2048,24,0.001, 0.144);
+    CiA402SetupData sd32(2048,24,0.001, 0.144);
+    CiA402SetupData sd33(2048,24,0.001, 0.144);
 
-    CiA402Device m31 (31, &pm31, sd31);
+    CiA402Device m31 (31, &pm31, &sd31);
+    CiA402Device m32 (32, &pm32, &sd32);
+    CiA402Device m33 (33, &pm33, &sd33);
 
     // motors must be turn ON
 
@@ -34,7 +40,7 @@ int main ()
 
 
     // position  [rads]
-    m31.SetPosition(3);
+    m31.SetPosition(1);
 
 
     for (int i=0;i<50;i++){
