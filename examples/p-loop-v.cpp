@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "fcontrol.h"
+#include "IPlot.h"
 
 
 int main ()
@@ -19,6 +20,7 @@ int main ()
 
 
     double dts=0.001;
+    IPlot plotPos(dts);
 
     PIDBlock pid(0.5*1.5077,0.75378,0,dts);
 
@@ -27,7 +29,6 @@ int main ()
     m31.Reset();
     m31.SwitchOn();
 
-    //m31.SetupPositionMode(1,1);
     m31.Setup_Velocity_Mode(0,1);
 
     double target_position = 1;
@@ -39,32 +40,24 @@ int main ()
     tools.SetSamplingTime(dts);
 
 
-    //m31.SetPosition(0);
-
-    for(double t=0; t<3; t+=dts){
+    for(double t=0; t<5; t+=dts){
 
 
         p = m31.GetPosition();
         cs = (target_position - p) > pid;
         m31.SetVelocity(cs);
+
+        plotPos.pushBack(p);
+
         cout<<"t: "<<t<<", p: "<<p<<endl;
-        cout<<"cs: "<<cs<<endl;
+        //cout<<"cs: "<<cs<<endl;
         tools.WaitSamplingTime();
 
     }
-    //m31.SetVelocity(0);
-
-    //m31.SetTorque(0);
-    //sleep(1);
-    //m31.SetupPositionMode(2,3);
-    //m31.SetPosition(0);
+    m31.SetVelocity(0);
     sleep(1);
 
-    //cout<<"final position: "<<m31.GetPosition();
-
-    //m31.SwitchOff();
-
-
+    plotPos.Plot();
 
 }
 

@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "fcontrol.h"
+#include "IPlot.h"
 
 
 int main ()
@@ -19,49 +20,46 @@ int main ()
 
 
     double dts=0.001;
+    IPlot plotVel(dts);
 
-    PIDBlock pid(0.5*1.5077,0.75378,0,dts);
+    PIDBlock pid(1.5077,0.75378,0,dts);
 
 
     //    Motor setup
     m31.Reset();
     m31.SwitchOn();
 
-    //m31.Setup_Torque_Mode();
-    m31.Setup_Velocity_Mode(0,1);
+    m31.Setup_Torque_Mode();
 
-    double tspeed = 3;
+    double tspeed = 2;
     double cs = 0; //control signal
     double v = 0;
-
-    //cout<<m31.GetVelocity()<<endl;
 
 
     ToolsFControl tools;
     tools.SetSamplingTime(dts);
 
-
-    //m31.SetTorque(0.5);
-    m31.SetVelocity(1);
-
-    for(double t=0; t<3; t+=dts){
-
+    for(double t=0; t<5; t+=dts){
 
         v = m31.GetVelocity();
-        cout<<"getvel"<<endl;
         cs = (tspeed - v) > pid;
-        m31.SetVelocity(cs);
+        cs=cs/10000;
+        m31.SetTorque(cs); // tanto por 1
         cout<<"t: "<<t<<", v: "<<v<<endl;
+
         cout<<"cs: "<<cs<<endl;
+
+        plotVel.pushBack(v);
         tools.WaitSamplingTime();
 
     }
+    //
+    m31.SetTorque(0);
+    m31.Setup_Velocity_Mode(0,1);
     m31.SetVelocity(0);
-    //m31.SetTorque(0);
-    //sleep(1);
-    //m31.SetupPositionMode(2,3);
     sleep(1);
-    //m31.SwitchOff();
+
+    plotVel.Plot();
 
 
 

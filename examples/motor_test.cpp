@@ -15,13 +15,11 @@ int main ()
     CiA402SetupData sd31(2048,24,0.001, 0.144);
     CiA402SetupData sd32(2048,24,0.001, 0.144);
     CiA402SetupData sd33(2048,24,0.001, 0.144);
-     cout<<"SetupData"<<endl;
 
     CiA402Device m31 (31, &pm31, &sd31);
     CiA402Device m32 (32, &pm32, &sd32);
     CiA402Device m33 (33, &pm33, &sd33);
 
-    cout<<"port setup"<<endl;
 
 //    Motor setup
      m31.Reset();

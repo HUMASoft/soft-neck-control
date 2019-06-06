@@ -11,17 +11,17 @@ int main(){
     double incli, orient;
 
     //--Can port communications--
-    SocketCanPort pm1("can1");
-    SocketCanPort pm2("can1");
-    SocketCanPort pm3("can1");
+    SocketCanPort pm31("can1");
+    SocketCanPort pm32("can1");
+    SocketCanPort pm33("can1");
 
-    CiA402SetupData sd1(4096,3.7,0.001,4);
-    CiA402SetupData sd2 = sd1;
-    CiA402SetupData sd3 = sd1;
+    CiA402SetupData sd31(2048,24,0.001, 0.144);
+    CiA402SetupData sd32(2048,24,0.001, 0.144);
+    CiA402SetupData sd33(2048,24,0.001, 0.144);
 
-    CiA402Device m1 (1, &pm1, &sd1);
-    CiA402Device m2 (2, &pm2, &sd2);
-    CiA402Device m3 (3, &pm3, &sd3);
+    CiA402Device m31 (31, &pm31, &sd31);
+    CiA402Device m32 (32, &pm32, &sd32);
+    CiA402Device m33 (33, &pm33, &sd33);
 
     //--Neck Kinematics--
     double l0=0.1090;
@@ -31,43 +31,54 @@ int main(){
     double targetAngle1, targetAngle2, targetAngle3;
 
     //    Motor setup
-    m1.Reset();
-    m1.SwitchOn();
+    m31.Reset();
+    m31.SwitchOn();
 
-    m2.Reset();
-    m2.SwitchOn();
+    m32.Reset();
+    m32.SwitchOn();
 
-    m3.Reset();
-    m3.SwitchOn();
+    m33.Reset();
+    m33.SwitchOn();
 
-          //set velocity and aceleration (rads/s)
-    m1.SetupPositionMode(1,1);
-    m2.SetupPositionMode(1,1);
-    m3.SetupPositionMode(1,1);
+
+    //set velocity and aceleration (rads/s)
+    m31.SetupPositionMode(1,1);
+    m32.SetupPositionMode(1,1);
+    m33.SetupPositionMode(1,1);
+
     //
 
     ToolsFControl tools;
     tools.SetSamplingTime(dts);
 
-    incli = 14.5;
-    orient = 300.8;
+    incli = 25.5;
+    orient = 180.0;
 
     neck_ik.GetIK(incli,orient,lengths);
     targetAngle1=(lg0-lengths[0])/0.01;//*180/(0.01*M_PI);
     targetAngle2=(lg0-lengths[1])/0.01;//*180/(0.01*M_PI);
     targetAngle3=(lg0-lengths[2])/0.01;//*180/(0.01*M_PI);
 
-    m1.SetPosition(targetAngle1);
-    m2.SetPosition(targetAngle2);
-    m3.SetPosition(targetAngle3);
+    m31.SetPosition(targetAngle1);
+    m32.SetPosition(targetAngle2);
+    m33.SetPosition(targetAngle3);
 
-    cout <<"target1: "<<targetAngle1<<" target2: "<<targetAngle2<<" target3: "<<targetAngle3<<endl;
 
-    for (double t=0;t<5;t+=dts)
+    for (double t=0;t<6;t+=dts)
     {
-        cout <<"pos1: "<<m1.GetPosition()<<" pos2: "<<m2.GetPosition()<<" pos3: "<<m3.GetPosition()<<endl;
+        cout <<"target1: "<<targetAngle1;
+        cout <<"target2: "<<targetAngle2;
+        cout <<"target3: "<<targetAngle3<<endl;
+        cout <<"pos1: "<<m31.GetPosition();
+        cout <<"pos2: "<<m32.GetPosition();
+        cout <<"pos3: "<<m33.GetPosition()<<endl;
         tools.WaitSamplingTime();
 
     }
+
+    sleep(1);
+        m31.SetPosition(0);
+        m32.SetPosition(0);
+        m33.SetPosition(0);
 
 }

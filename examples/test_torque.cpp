@@ -15,40 +15,34 @@ int main ()
 
     CiA402Device m31 (31, &pm31, &sd31);
 
+    double dts=0.001;
+    double v;
+
+    ToolsFControl tools;
+    tools.SetSamplingTime(dts);
+
 
     //    Motor setup
     m31.Reset();
     m31.SwitchOn();
 
     m31.Setup_Torque_Mode();
+    //m31.Setup_Velocity_Mode(0,1);
 
 
-cout<<"torque 0"<<endl;
-    m31.SetTorque(0);
+    m31.SetTorque(0.8);
+    //m31.SetVelocity(5);
 
-    sleep(5);
+    for(double t=0; t<2; t+=dts){
+        v= m31.GetVelocity();
+        cout <<"vel: "<< v <<endl;
+        tools.WaitSamplingTime();
+    }
 
-    cout<<m31.GetVelocity()<<endl;
 
-//    double dts=0.01;
+    sleep(1);
+    m31.Setup_Velocity_Mode(0,1);
+    m31.SetVelocity(0);
 
-//    ToolsFControl tools;
-//    tools.SetSamplingTime(dts);
-//    //
-//cout<<"torque 0.5"<<endl;
-
-//    m31.SetTorque(-1);
-
-//    for(double t=0; t<2; t+=dts){
-//         cout<<m31.GetVelocity()<<endl;
-//         tools.WaitSamplingTime();
-
-//    }
-
-//    cout<<"torque 0"<<endl;
-//   m31.SetTorque(0.0);
-//      m31.SetTorque(0.0);
-//         m31.SetTorque(0.0);
-//   sleep(1);
 
 }

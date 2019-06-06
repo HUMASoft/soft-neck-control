@@ -35,12 +35,24 @@ int main ()
     m31.Reset();
     m31.SwitchOn();
 
+    m32.Reset();
+    m32.SwitchOn();
+
+    m33.Reset();
+    m33.SwitchOn();
+
     //set velocity and aceleration (rads/s)
     m31.SetupPositionMode(1,1);
-
+    m32.SetupPositionMode(1,1);
+    m33.SetupPositionMode(1,1);
 
     // position  [rads]
-    m31.SetPosition(1);
+    m31.SetPosition(0);
+    sleep(3);
+    m32.SetPosition(5);
+    sleep(3);
+    m33.SetPosition(2);
+
 
 
     for (int i=0;i<50;i++){
@@ -58,11 +70,13 @@ int main ()
         usleep(1000*100);
     }
 
-    v.Plot();
-    p.Plot();
+    //v.Plot();
+   // p.Plot();
 
     // position  [rads]
-    m31.SetPosition(0);
+//    m31.SetPosition(0);
+//    m32.SetPosition(0);
+//    m33.SetPosition(0);
     sleep(3);
 
 }
