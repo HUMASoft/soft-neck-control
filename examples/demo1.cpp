@@ -6,16 +6,16 @@
 #include "ToolsFControl.h"
 #include "SerialArduino.h"
 
+
 int main(){
 
     double dts=0.01;
     double incli, orient;
 
-    ofstream graph("graph.csv",std::ofstream::out);
-
-    //--imu sensor--
+    //--sensor--
     SerialArduino tilt;
     float incSensor,oriSensor;
+    ofstream graph("graph.csv",std::ofstream::out);
 
 
     //--Can port communications--
@@ -32,12 +32,14 @@ int main(){
     CiA402Device m33 (33, &pm33, &sd33);
 
     //--Neck Kinematics--
-    double l0=0.1090;
+    double l0=0.1085;
     double lg0=l0+0.002;
+    double radio=0.0075;
     GeoInkinematics neck_ik(0.052,0.052,l0); //kinematics geometric
     vector<double> lengths(3);
     double targetAngle1, targetAngle2, targetAngle3;
-    double radio=0.0075;
+
+    sleep(4); //wait to imu sensor
 
     //    Motor setup
     m31.Reset();
@@ -56,13 +58,18 @@ int main(){
     m33.SetupPositionMode(1,1);
 
     //
-    sleep(4); //wait for sensor
 
     ToolsFControl tools;
     tools.SetSamplingTime(dts);
 
-    incli = 10;
-    orient = 90;
+    incli = 0;
+    orient = 1;
+    //for (double k=0; k<2; k++){
+    for(double i=0; i<3; i++){
+        incli = incli+10;
+
+    for(double j=1; j<35; j++){
+        orient = orient+10;
 
     neck_ik.GetIK(incli,orient,lengths);
     targetAngle1=(lg0-lengths[0])/radio;//*180/(0.01*M_PI);
@@ -74,26 +81,38 @@ int main(){
     m33.SetPosition(targetAngle3);
 
 
-    for (double t=0;t<15;t+=dts)
+    for (double t=0;t<0.5;t+=dts)
     {
+        cout <<"t: "<<t;
+        cout <<"target1: "<<targetAngle1;
+        cout <<"target2: "<<targetAngle2;
+        cout <<"target3: "<<targetAngle3<<endl;
+        cout <<"pos1: "<<m31.GetPosition();
+        cout <<"pos2: "<<m32.GetPosition();
+        cout <<"pos3: "<<m33.GetPosition()<<endl;
+        cout << "orient: "<<orient<<" incl: "<<incli<<endl;
         tilt.readSensor(incSensor,oriSensor);
-        cout <<"target1: "<<targetAngle1 <<"target2: "<<targetAngle2 <<"target3: "<<targetAngle3<<endl;
-        cout <<"pos1: "<<m31.GetPosition()<<"pos2: "<<m32.GetPosition() <<"pos3: "<<m33.GetPosition()<<endl;
         cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
         graph << t << " , " << targetAngle1 << " , " << m31.GetPosition() << " , " << targetAngle2 << " , " << m32.GetPosition() << " , " << targetAngle3 << " , " << m33.GetPosition() << " , " << incli << " , " << incSensor << " , " << orient << " , " << oriSensor <<endl;
 
         tools.WaitSamplingTime();
 
+
     }
 
-    sleep(2);
+    }
+    orient = 0;
 
-    m31.SetPosition(0.01);
-    m32.SetPosition(0.01);
-    m33.SetPosition(0.01);
-    cout<<"FIN"<<endl;
+    }
 
-    sleep(2);
-    cout<<"FIN"<<endl;
+    //incli = 0;
+    //}
+
+    sleep(1);
+        m31.SetPosition(0);
+        m32.SetPosition(0);
+        m33.SetPosition(0);
+        sleep (1);
 
 }
+

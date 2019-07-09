@@ -49,7 +49,7 @@ int main ()
     // position  [rads]
     m31.SetPosition(0);
     sleep(3);
-    m32.SetPosition(5);
+    m32.SetPosition(0);
     sleep(3);
     m33.SetPosition(2);
 
