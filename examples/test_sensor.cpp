@@ -3,6 +3,7 @@
 #include "SerialArduino.h"
 #include <iostream>
 #include "ToolsFControl.h"
+#include "SystemBlock.h"
 
 int main(){
     //--sensor--
@@ -10,6 +11,8 @@ int main(){
     float incSensor,oriSensor;
     double dts=0.01;
     sleep(4); //wait for sensor
+    SystemBlock filterSensor(0.09516,0,- 0.9048,1);
+
 
     ToolsFControl tools;
     tools.SetSamplingTime(dts);
@@ -17,7 +20,7 @@ int main(){
     for (double t=0;t<1000;t+=dts){
 
         tilt.readSensor(incSensor,oriSensor);
-        cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
+        cout << "incli_sen: " <<  (incSensor > filterSensor) << " , orient_sen: " << oriSensor << endl;
         tools.WaitSamplingTime();
     }
 
