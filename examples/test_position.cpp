@@ -29,9 +29,9 @@ int main ()
     m3.SetupPositionMode();
 
     // position  [rads]
-    m1.SetPosition(0);
-    m2.SetPosition(0);
-    m3.SetPosition(0);
+    m1.SetPosition(1);
+    m2.SetPosition(-1);
+    m3.SetPosition(-1);
 
     for (int i=0;i<10;i++){
 
