@@ -29,19 +29,19 @@ int main ()
     m3.SetupPositionMode();
 
     // position  [rads]
-    m1.SetPosition(1);
-    m2.SetPosition(-1);
-    m3.SetPosition(-1);
+    m1.SetPosition(0);
+    m2.SetPosition(0);
+    m3.SetPosition(0);
 
     for (int i=0;i<10;i++){
 
-        pos1 = m1.GetPosition();
+//        pos1 = m1.GetPosition();
         pos2 = m2.GetPosition();
-        pos3 = m3.GetPosition();
+//        pos3 = m3.GetPosition();
 
-        vel1 = m1.GetVelocity();
-        vel2 = m2.GetVelocity();
-        vel3 = m3.GetVelocity();
+//        vel1 = m1.GetVelocity();
+//        vel2 = m2.GetVelocity();
+//        vel3 = m3.GetVelocity();
 
         cout<<"pos1: "<<pos1<<", "<<"pos2: "<<pos2<<", "<<"pos3: "<<pos3<<endl;
         cout<<"vel1: "<<vel1<<", "<<"vel2: "<<vel2<<", "<<"vel3: "<<vel3<<endl;

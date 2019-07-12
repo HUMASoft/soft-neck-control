@@ -36,7 +36,7 @@ int main ()
 //     m32.SetupPositionMode(1,1);
 //     m33.SetupPositionMode(1,1);
 
-     cout << "Motor Start" <<endl;
+     cout << "Motors Started" <<endl;
 
 
 }

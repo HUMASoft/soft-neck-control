@@ -31,7 +31,8 @@ int main ()
 //   ----------
 //   z - 0.9048
     SystemBlock filter(0.09516,0,- 0.9048,1);
-    int numOrder=0,denOrder=1;
+
+    int numOrder=1,denOrder=2;
     OnlineSystemIdentification model(numOrder,denOrder,filter);
 
     //Samplinfg time
@@ -56,7 +57,7 @@ int main ()
     CiA402Device m1 (31, &pm31, &sd31);
     m1.StartNode();
     m1.SwitchOn();
-    m1.Setup_Velocity_Mode();
+    m1.Setup_Velocity_Mode(5);
 
 
     //m2
@@ -65,7 +66,7 @@ int main ()
     CiA402Device m2 (32, &pm2, &sd32);
     m2.StartNode();
     m2.SwitchOn();
-    m2.Setup_Velocity_Mode();
+    m2.Setup_Velocity_Mode(5);
 
     //m3
     SocketCanPort pm3("can1");
@@ -73,7 +74,7 @@ int main ()
     CiA402Device m3 (33, &pm3, &sd33);
     m3.StartNode();
     m3.SwitchOn();
-    m3.Setup_Velocity_Mode();
+    m3.Setup_Velocity_Mode(5);
 
 
 
@@ -83,18 +84,6 @@ int main ()
     FPDBlock c2(8.67,20.53,-0.83,dts);
     FPDBlock c3(8.67,20.53,-0.83,dts);
 
-
-    //--Neck Kinematics--
-    double l0=0.1085;
-    double lg0=l0+0.002;
-    double radio=0.0075;
-    GeoInkinematics neck_ik(0.052,0.052,l0); //kinematics geometric
-    vector<double> lengths(3);
-
-    neck_ik.GetIK(0,90,lengths);
-
-
-    IPlot plot1,plot2,plot3,id;
 
 
     double ep1,ev1,cs1;
@@ -106,7 +95,18 @@ int main ()
 
 
 
+    IPlot plot1,plot2,plot3,id;
 
+
+    //--Neck Kinematics--
+    double l0=0.1085;
+    double lg0=l0+0.002;
+    double radio=0.0075;
+    GeoInkinematics neck_ik(0.052,0.052,l0); //kinematics geometric
+    vector<double> lengths(3);
+
+    double inc=15;
+    neck_ik.GetIK(inc,90,lengths);
     tp1=(lg0-lengths[0])/radio;
     tp2=(lg0-lengths[1])/radio;
     tp3=(lg0-lengths[2])/radio;
@@ -118,20 +118,22 @@ int main ()
     double interval=6; //in seconds
     for (double t=0;t<interval; t+=dts)
     {
+//        inc=10+0.1*((rand() % 10 + 1)-5);
+//        neck_ik.GetIK(inc,90,lengths);
+//        tp1=(lg0-lengths[0])/radio;
+//        tp2=(lg0-lengths[1])/radio;
+//        tp3=(lg0-lengths[2])/radio;
 
-        tilt.readSensor(incSensor,oriSensor);
-        cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
 
         file << t << ",";
 
         //loopm1
         ep1=tp1- m1.GetPosition();
         cs1= ep1 > c1;
-        cs1=cs1+0.2*((rand() % 10 + 1)-5);
+//        cs1=cs1+0.1*((rand() % 10 + 1)-5);
         m1.SetVelocity(cs1);
         p1=m1.GetPosition();
         plot1.pushBack(p1);
-        model.UpdateSystem(cs1,incSensor);
 
         file << tp1 << "," << p1 << ","<< cs1 << ",";
 
@@ -154,6 +156,10 @@ int main ()
 
         file << tp3 << ","<< p3 << ","<< cs3  << endl;
 
+        tilt.readSensor(incSensor,oriSensor);
+        cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
+//        cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
+        model.UpdateSystem(inc,incSensor);
 
         tools.WaitSamplingTime();
 
@@ -179,14 +185,15 @@ int main ()
 //    p1.PlotAndSave("../pos.csv");
 
 
-//    m1.SetupPositionMode();
-//    m2.SetupPositionMode();
-//    m3.SetupPositionMode();
-//    m1.SetPosition(0);
-//    m2.SetPosition(0);
-//    m3.SetPosition(0);
-//    m1.SetPosition(0);
+    m1.SetupPositionMode(1);
+    m2.SetupPositionMode(1);
+    m3.SetupPositionMode(1);
     sleep(1);
+    m1.SetPosition(0);
+    m2.SetPosition(0);
+    m3.SetPosition(0);
+
+    sleep(2);
 
 
 file.close();
