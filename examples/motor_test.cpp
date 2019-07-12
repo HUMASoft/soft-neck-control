@@ -30,6 +30,8 @@ int main ()
 
      m33.Reset();
      m33.SwitchOn();
+//     m33.DisablePDOs();
+
 
     //set velocity and aceleration (rads/s)
 //     m31.SetupPositionMode(1,1);

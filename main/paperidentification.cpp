@@ -115,14 +115,17 @@ int main ()
 
     file << "time,tp1,p1,cs1,tp2,p2,cs2,tp3,p3,cs3" << endl;
 
+            inc=0.1*((rand() % 10 + 1)-5);
+
+
     double interval=6; //in seconds
     for (double t=0;t<interval; t+=dts)
     {
-//        inc=10+0.1*((rand() % 10 + 1)-5);
-//        neck_ik.GetIK(inc,90,lengths);
-//        tp1=(lg0-lengths[0])/radio;
-//        tp2=(lg0-lengths[1])/radio;
-//        tp3=(lg0-lengths[2])/radio;
+        inc=0.1*((rand() % 10 + 1)-5);
+        neck_ik.GetIK(inc,90,lengths);
+        tp1=(lg0-lengths[0])/radio;
+        tp2=(lg0-lengths[1])/radio;
+        tp3=(lg0-lengths[2])/radio;
 
 
         file << t << ",";
