@@ -55,7 +55,7 @@ int main ()
     SocketCanPort pm31("can1");
     CiA402SetupData sd31(2048,24,0.001, 0.144);
     CiA402Device m1 (31, &pm31, &sd31);
-    m1.StartNode();
+    m1.Reset();
     m1.SwitchOn();
     m1.Setup_Velocity_Mode(5);
 
@@ -64,7 +64,7 @@ int main ()
     SocketCanPort pm2("can1");
     CiA402SetupData sd32(2048,24,0.001, 0.144);
     CiA402Device m2 (32, &pm2, &sd32);
-    m2.StartNode();
+    m2.Reset();
     m2.SwitchOn();
     m2.Setup_Velocity_Mode(5);
 
@@ -72,7 +72,7 @@ int main ()
     SocketCanPort pm3("can1");
     CiA402SetupData sd33(2048,24,0.001, 0.144);
     CiA402Device m3 (33, &pm3, &sd33);
-    m3.StartNode();
+    m3.Reset();
     m3.SwitchOn();
     m3.Setup_Velocity_Mode(5);
 
@@ -105,7 +105,9 @@ int main ()
     GeoInkinematics neck_ik(0.052,0.052,l0); //kinematics geometric
     vector<double> lengths(3);
 
-    double inc=15;
+    tilt.readSensor(incSensor,oriSensor);
+
+    double inc=0.1*((rand() % 10 + 1)-5);
     neck_ik.GetIK(inc,90,lengths);
     tp1=(lg0-lengths[0])/radio;
     tp2=(lg0-lengths[1])/radio;
@@ -115,12 +117,23 @@ int main ()
 
     file << "time,tp1,p1,cs1,tp2,p2,cs2,tp3,p3,cs3" << endl;
 
-            inc=0.1*((rand() % 10 + 1)-5);
 
+//    vector<double> inc(interval/dts);
+//    for i
 
     double interval=6; //in seconds
     for (double t=0;t<interval; t+=dts)
     {
+
+        if (tilt.readSensor(incSensor,oriSensor) <0)
+        {
+            cout << "Sensor error! " << endl;
+            //Due to sensor error set motors zero velocity.
+            m1.SetVelocity(0);
+            m2.SetVelocity(0);
+            m3.SetVelocity(0);
+
+        }
         inc=0.1*((rand() % 10 + 1)-5);
         neck_ik.GetIK(inc,90,lengths);
         tp1=(lg0-lengths[0])/radio;
@@ -159,7 +172,7 @@ int main ()
 
         file << tp3 << ","<< p3 << ","<< cs3  << endl;
 
-        tilt.readSensor(incSensor,oriSensor);
+
         cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
 //        cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
         model.UpdateSystem(inc,incSensor);
@@ -188,15 +201,20 @@ int main ()
 //    p1.PlotAndSave("../pos.csv");
 
 
-    m1.SetupPositionMode(1);
-    m2.SetupPositionMode(1);
-    m3.SetupPositionMode(1);
-    sleep(1);
-    m1.SetPosition(0);
-    m2.SetPosition(0);
-    m3.SetPosition(0);
+//    m1.SetupPositionMode(1);
+//    m2.SetupPositionMode(1);
+//    m3.SetupPositionMode(1);
+//    sleep(1);
+//    m1.SetPosition(0);
+//    m2.SetPosition(0);
+//    m3.SetPosition(0);
 
     sleep(2);
+
+    m1.SwitchOff();
+    m2.SwitchOff();
+    m3.SwitchOff();
+
 
 
 file.close();

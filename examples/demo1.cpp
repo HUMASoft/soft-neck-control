@@ -9,7 +9,7 @@
 
 int main(){
 
-    double dts=0.01;
+    double dts=0.1;
     double incli, orient;
 
     //--sensor--
@@ -33,7 +33,7 @@ int main(){
 
     //--Neck Kinematics--
     double l0=0.1085;
-    double lg0=l0+0.002;
+    double lg0=l0+0.003;
     double radio=0.0075;
     GeoInkinematics neck_ik(0.052,0.052,l0); //kinematics geometric
     vector<double> lengths(3);
@@ -53,9 +53,9 @@ int main(){
 
 
     //set velocity and aceleration (rads/s)
-    m31.SetupPositionMode(1,1);
-    m32.SetupPositionMode(1,1);
-    m33.SetupPositionMode(1,1);
+    m31.SetupPositionMode(10,10);
+    m32.SetupPositionMode(10,10);
+    m33.SetupPositionMode(10,10);
 
     //
 
@@ -83,17 +83,17 @@ int main(){
 
     for (double t=0;t<0.5;t+=dts)
     {
-        cout <<"t: "<<t;
+        cout <<"t: "<<t << endl;
         cout <<"target1: "<<targetAngle1;
-        cout <<"target2: "<<targetAngle2;
-        cout <<"target3: "<<targetAngle3<<endl;
-        cout <<"pos1: "<<m31.GetPosition();
-        cout <<"pos2: "<<m32.GetPosition();
-        cout <<"pos3: "<<m33.GetPosition()<<endl;
+        cout <<", target2: "<<targetAngle2;
+        cout <<", target3: "<<targetAngle3<<endl;
+        cout <<"pos1:    "<<m31.GetPosition();
+        cout <<", pos2: "<<m32.GetPosition();
+        cout <<", pos3: "<<m33.GetPosition()<<endl;
         cout << "orient: "<<orient<<" incl: "<<incli<<endl;
         tilt.readSensor(incSensor,oriSensor);
-        cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
-        graph << t << " , " << targetAngle1 << " , " << m31.GetPosition() << " , " << targetAngle2 << " , " << m32.GetPosition() << " , " << targetAngle3 << " , " << m33.GetPosition() << " , " << incli << " , " << incSensor << " , " << orient << " , " << oriSensor <<endl;
+//        cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
+//        graph << t << " , " << targetAngle1 << " , " << m31.GetPosition() << " , " << targetAngle2 << " , " << m32.GetPosition() << " , " << targetAngle3 << " , " << m33.GetPosition() << " , " << incli << " , " << incSensor << " , " << orient << " , " << oriSensor <<endl;
 
         tools.WaitSamplingTime();
 

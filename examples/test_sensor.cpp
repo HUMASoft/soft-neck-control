@@ -19,8 +19,14 @@ int main(){
 
     for (double t=0;t<1000;t+=dts){
 
-        tilt.readSensor(incSensor,oriSensor);
-        cout << "incli_sen: " <<  (incSensor > filterSensor) << " , orient_sen: " << oriSensor << endl;
+        if (tilt.readSensor(incSensor,oriSensor)<0)
+        {
+            cout << "Sensor read error !" << endl;
+        }
+        else
+        {
+            cout << "incli_sen: " <<  (incSensor > filterSensor) << " , orient_sen: " << oriSensor << endl;
+        }
         tools.WaitSamplingTime();
     }
 
