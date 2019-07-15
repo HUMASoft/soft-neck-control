@@ -134,7 +134,7 @@ int main ()
             m3.SetVelocity(0);
 
         }
-        inc=0.1*((rand() % 10 + 1)-5);
+        inc=10+0.1*((rand() % 10 + 1)-5);
         neck_ik.GetIK(inc,90,lengths);
         tp1=(lg0-lengths[0])/radio;
         tp2=(lg0-lengths[1])/radio;
