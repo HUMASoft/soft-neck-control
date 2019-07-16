@@ -17,9 +17,22 @@ int main(){
     ToolsFControl tools;
     tools.SetSamplingTime(dts);
 
+    for (double t=0; t<6; t+=dts)
+    {
+        tools.WaitSamplingTime();
+        if (tilt.readSensor(incSensor,oriSensor)>=0)
+        {
+            cout << "Starting sensor " << endl;
+            break;
+        }
+    }
+    cout << "Sensor started" << endl;
+
+
     for (double t=0;t<1000;t+=dts){
 
-        if (tilt.readSensor(incSensor,oriSensor)<0)
+        if (tilt.estimateSensor(incSensor,oriSensor)<0)
+//        if (tilt.readSensor(incSensor,oriSensor)<0)
         {
             cout << "Sensor read error !" << endl;
         }
@@ -27,7 +40,7 @@ int main(){
         {
             cout << "incli_sen: " <<  (incSensor > filterSensor) << " , orient_sen: " << oriSensor << endl;
         }
-        tools.WaitSamplingTime();
+        cout << "Available time: " << tools.WaitSamplingTime() << endl;
     }
 
 }

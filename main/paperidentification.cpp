@@ -32,11 +32,11 @@ int main ()
 //   z - 0.9048
     SystemBlock filter(0.09516,0,- 0.9048,1);
 
-    int numOrder=1,denOrder=2;
+    int numOrder=0,denOrder=2;
     OnlineSystemIdentification model(numOrder,denOrder,filter);
 
     //Samplinfg time
-    double dts=0.01;
+    double dts=0.02;
 
     ToolsFControl tools;
     tools.SetSamplingTime(dts);
@@ -105,13 +105,16 @@ int main ()
     GeoInkinematics neck_ik(0.052,0.052,l0); //kinematics geometric
     vector<double> lengths(3);
 
-    tilt.readSensor(incSensor,oriSensor);
+    for (double t=0; t<6; t+=dts)
+    {
+    if (tilt.readSensor(incSensor,oriSensor)>=0) break;
+    }
 
     double inc=0.1*((rand() % 10 + 1)-5);
-    neck_ik.GetIK(inc,90,lengths);
-    tp1=(lg0-lengths[0])/radio;
-    tp2=(lg0-lengths[1])/radio;
-    tp3=(lg0-lengths[2])/radio;
+//    neck_ik.GetIK(inc,90,lengths);
+//    tp1=(lg0-lengths[0])/radio;
+//    tp2=(lg0-lengths[1])/radio;
+//    tp3=(lg0-lengths[2])/radio;
 
     cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
 
@@ -125,7 +128,7 @@ int main ()
     for (double t=0;t<interval; t+=dts)
     {
 
-        if (tilt.readSensor(incSensor,oriSensor) <0)
+        if (tilt.estimateSensor(incSensor,oriSensor) <0)
         {
             cout << "Sensor error! " << endl;
             //Due to sensor error set motors zero velocity.
@@ -135,13 +138,13 @@ int main ()
 
         }
 
-        inc=-20+10*t+0.3*((rand() % 10 + 1)-5);
+        inc=20+0.3*((rand() % 10 + 1)-5);
 
-        cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
+//        cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
 //        cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
         model.UpdateSystem(inc,incSensor);
 
-        neck_ik.GetIK(inc,90*t,lengths);
+        neck_ik.GetIK(inc,90,lengths);
         tp1=(lg0-lengths[0])/radio;
         tp2=(lg0-lengths[1])/radio;
         tp3=(lg0-lengths[2])/radio;
@@ -153,7 +156,6 @@ int main ()
         //loopm1
         ep1=tp1- m1.GetPosition();
         cs1= ep1 > c1;
-//        cs1=cs1+0.1*((rand() % 10 + 1)-5);
         m1.SetVelocity(cs1);
         p1=m1.GetPosition();
         plot1.pushBack(p1);
@@ -181,8 +183,7 @@ int main ()
 
 
 
-
-        tools.WaitSamplingTime();
+        cout << "Available time: " << tools.WaitSamplingTime() << endl;
 
 
     }
