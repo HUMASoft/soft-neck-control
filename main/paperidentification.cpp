@@ -121,7 +121,7 @@ int main ()
 //    vector<double> inc(interval/dts);
 //    for i
 
-    double interval=6; //in seconds
+    double interval=4; //in seconds
     for (double t=0;t<interval; t+=dts)
     {
 
@@ -134,11 +134,18 @@ int main ()
             m3.SetVelocity(0);
 
         }
-        inc=10+0.1*((rand() % 10 + 1)-5);
-        neck_ik.GetIK(inc,90,lengths);
+
+        inc=-20+10*t+0.3*((rand() % 10 + 1)-5);
+
+        cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
+//        cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
+        model.UpdateSystem(inc,incSensor);
+
+        neck_ik.GetIK(inc,90*t,lengths);
         tp1=(lg0-lengths[0])/radio;
         tp2=(lg0-lengths[1])/radio;
         tp3=(lg0-lengths[2])/radio;
+
 
 
         file << t << ",";
@@ -173,9 +180,7 @@ int main ()
         file << tp3 << ","<< p3 << ","<< cs3  << endl;
 
 
-        cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
-//        cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
-        model.UpdateSystem(inc,incSensor);
+
 
         tools.WaitSamplingTime();
 
