@@ -138,13 +138,13 @@ int main ()
 
         }
 
-        inc=20+0.3*((rand() % 10 + 1)-5);
+        inc=20-5*t+0.1*((rand() % 10 + 1)-5);
 
 //        cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
-//        cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
+        cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
         model.UpdateSystem(inc,incSensor);
 
-        neck_ik.GetIK(inc,90,lengths);
+        neck_ik.GetIK(inc,0,lengths);
         tp1=(lg0-lengths[0])/radio;
         tp2=(lg0-lengths[1])/radio;
         tp3=(lg0-lengths[2])/radio;
@@ -183,7 +183,7 @@ int main ()
 
 
 
-        cout << "Available time: " << tools.WaitSamplingTime() << endl;
+        tools.WaitSamplingTime();
 
 
     }
