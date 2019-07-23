@@ -192,6 +192,9 @@ int main ()
 
 
     model.PrintZTransferFunction(dts);
+    double phi,mag,w=2;
+    model.GetMagnitudeAndPhase(w,mag,phi);
+    cout << "mag: " << mag  << "phi: " << phi << endl ;
 
     m1.SetVelocity(0);
     m2.SetVelocity(0);
