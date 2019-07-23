@@ -35,6 +35,8 @@ int main ()
     int numOrder=0,denOrder=2;
     OnlineSystemIdentification model(numOrder,denOrder,filter);
 
+    FPDTuner tuner;
+
     //Samplinfg time
     double dts=0.02;
 
@@ -144,7 +146,7 @@ int main ()
         cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
         model.UpdateSystem(inc,incSensor);
 
-        neck_ik.GetIK(inc,0,lengths);
+        neck_ik.GetIK(inc,90/**t*/,lengths);
         tp1=(lg0-lengths[0])/radio;
         tp2=(lg0-lengths[1])/radio;
         tp3=(lg0-lengths[2])/radio;
@@ -194,6 +196,7 @@ int main ()
     model.PrintZTransferFunction(dts);
     double phi,mag,w=2;
     model.GetMagnitudeAndPhase(w,mag,phi);
+
     cout << "mag: " << mag  << "phi: " << phi << endl ;
 
     m1.SetVelocity(0);
