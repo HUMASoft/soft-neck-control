@@ -65,7 +65,7 @@ int main(){
     incli = 0;
     orient = 1;
     //for (double k=0; k<2; k++){
-    for(double i=0; i<3; i++){
+    for(double i=0; i<1; i++){
         incli = incli+10;
 
     for(double j=1; j<35; j++){
