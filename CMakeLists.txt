@@ -9,8 +9,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 aux_source_directory(main SRC_LIST)
 aux_source_directory(examples SRC_LIST)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/files/phi.m_exp.csv ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-
 
 add_subdirectory(lib)
 #revisar la forma de incluir kinematics
