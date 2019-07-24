@@ -58,7 +58,7 @@ int main(){
     //
     sleep(4); //wait for sensor
 
-    ToolsFControl tools;
+    SamplingTime tools;
     tools.SetSamplingTime(dts);
 
     incli = 10;

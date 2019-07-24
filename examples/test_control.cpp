@@ -72,7 +72,7 @@ int main(){
 
     //
 
-    ToolsFControl tools;
+    SamplingTime tools;
     tools.SetSamplingTime(dts);
     sleep(4);
 

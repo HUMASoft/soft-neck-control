@@ -59,7 +59,7 @@ int main(){
 
     //
 
-    ToolsFControl tools;
+    SamplingTime tools;
     tools.SetSamplingTime(dts);
 
     incli = 0;

@@ -40,8 +40,7 @@ int main ()
     //Samplinfg time
     double dts=0.02;
 
-    ToolsFControl tools;
-    tools.SetSamplingTime(dts);
+    SamplingTime Ts(dts);
 
 
 //    model.SetFilter(filter);
@@ -185,7 +184,7 @@ int main ()
 
 
 
-        tools.WaitSamplingTime();
+        Ts.WaitSamplingTime();
 
 
     }
@@ -195,7 +194,7 @@ int main ()
 
     model.PrintZTransferFunction(dts);
     double phi,mag,w=2;
-    model.GetMagnitudeAndPhase(w,mag,phi);
+    model.GetMagnitudeAndPhase(dts,w,mag,phi);
 
     cout << "mag: " << mag  << "phi: " << phi << endl ;
 

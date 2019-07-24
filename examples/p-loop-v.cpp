@@ -36,7 +36,7 @@ int main ()
     double p = 0;
 
 
-    ToolsFControl tools;
+    SamplingTime tools;
     tools.SetSamplingTime(dts);
 
 

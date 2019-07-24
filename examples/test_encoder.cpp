@@ -24,7 +24,7 @@ int main ()
 
     double enc1,enc2,enc3;
     double dts=0.001;
-    ToolsFControl tools;
+    SamplingTime tools;
     tools.SetSamplingTime(dts);
 
     m31.Setup_Velocity_Mode(0,1);

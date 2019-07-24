@@ -14,7 +14,7 @@ int main(){
     SystemBlock filterSensor(0.09516,0,- 0.9048,1);
 
 
-    ToolsFControl tools;
+    SamplingTime tools;
     tools.SetSamplingTime(dts);
 
     for (double t=0; t<6; t+=dts)
