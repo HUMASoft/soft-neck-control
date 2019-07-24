@@ -34,8 +34,11 @@ int main ()
 
     int numOrder=0,denOrder=2;
     OnlineSystemIdentification model(numOrder,denOrder,filter);
+    SystemBlock sys;
+    FPDBlock con;
 
-    FPDTuner tuner;
+    FPDTuner tuner(60,2);
+
 
     //Samplinfg time
     double dts=0.02;
@@ -94,6 +97,8 @@ int main ()
     double ep3,ev3,cs3;
     double tp3,tv3,v3,p3;
 
+    double ierror, cs;
+
 
 
     IPlot plot1,plot2,plot3,id;
@@ -139,13 +144,26 @@ int main ()
 
         }
 
-        inc=20-5*t+0.1*((rand() % 10 + 1)-5);
+        //target
+        inc=20/*-5*t*/+0.1*((rand() % 10 + 1)-5);
 
 //        cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
         cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
         model.UpdateSystem(inc,incSensor);
 
-        neck_ik.GetIK(inc,90/**t*/,lengths);
+        model.GetSystemBlock(sys);
+
+        tuner.TuneIsom(sys,con);
+
+        //negative feedback
+        ierror = inc - incSensor;
+
+        //controller computes control signal
+        cs = ierror > con;
+
+
+        //controlled inclination (cs)
+        neck_ik.GetIK(cs,90/**t*/,lengths);
         tp1=(lg0-lengths[0])/radio;
         tp2=(lg0-lengths[1])/radio;
         tp3=(lg0-lengths[2])/radio;
