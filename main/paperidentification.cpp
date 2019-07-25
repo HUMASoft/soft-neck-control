@@ -41,7 +41,7 @@ int main ()
     OnlineSystemIdentification model(numOrder,denOrder,filter);
     SystemBlock sys;
 //    FPDBlock con;
-    PIDBlock con(0.5,0,0.1,dts);
+    PIDBlock con(1,0.01,0,dts);
 
 
     FPDTuner tuner(60,2);
@@ -63,8 +63,8 @@ int main ()
     CiA402Device m1 (31, &pm31, &sd31);
     m1.Reset();
     m1.SwitchOn();
-//    m1.SetupPositionMode();
-    m1.Setup_Velocity_Mode(5);
+    m1.SetupPositionMode();
+//    m1.Setup_Velocity_Mode(5);
 
 
     //m2
@@ -73,8 +73,8 @@ int main ()
     CiA402Device m2 (32, &pm2, &sd32);
     m2.Reset();
     m2.SwitchOn();
-//    m2.SetupPositionMode();
-    m2.Setup_Velocity_Mode(5);
+    m2.SetupPositionMode();
+//    m2.Setup_Velocity_Mode(5);
 
     //m3
     SocketCanPort pm3("can1");
@@ -82,8 +82,8 @@ int main ()
     CiA402Device m3 (33, &pm3, &sd33);
     m3.Reset();
     m3.SwitchOn();
-//    m3.SetupPositionMode();
-    m3.Setup_Velocity_Mode(5);
+    m3.SetupPositionMode();
+//    m3.Setup_Velocity_Mode(5);
 
 
 
@@ -146,9 +146,9 @@ int main ()
         {
             cout << "Sensor error! " << endl;
             //Due to sensor error set motors zero velocity.
-            m1.SetVelocity(0);
-            m2.SetVelocity(0);
-            m3.SetVelocity(0);
+//            m1.SetVelocity(0);
+//            m2.SetVelocity(0);
+//            m3.SetVelocity(0);
 
         }
 
@@ -166,37 +166,48 @@ int main ()
         //negative feedback
         ierror = inc - incSensor;
 
-        //controller computes control signal
-        cs = ierror/1000 > con;
+
 
 //        cout << "ierror " <<  ierror  << ", cs " << cs << ", incSensor " << incSensor <<endl;
 
 
-//        //controlled inclination (cs)
-//        neck_ik.GetIK(cs,0/**t*/,lengths);
-//        tp1=(lg0-lengths[0])/radio;
-//        tp2=(lg0-lengths[1])/radio;
-//        tp3=(lg0-lengths[2])/radio;
 
 
 
+//velocity strategy (activate also SetupVelocityMode())
+/*
+
+        //controller computes control signal
+        cs = ierror/1000 > con;
 
         cs1=(cs*cos(ori))/radio;
         cs2=(cs*cos(ori+da2))/radio;
         cs3=(cs*cos(ori+da3))/radio;
-
-        cout << "cs1 " << cs1 << ", cs2 " << cs2 << ", cs3 " << cs3 <<endl;
-//        cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
-
         m1.SetVelocity(cs1);
         m2.SetVelocity(cs2);
         m3.SetVelocity(cs3);
+        cout << "cs1 " << cs1 << ", cs2 " << cs2 << ", cs3 " << cs3 <<endl;
+
+        */
+//velocity strategy (activate also SetupVelocityMode())
 
 
-//        m1.SetPosition(tp1);
-//        m2.SetPosition(tp2);
-//        m3.SetPosition(tp3);
 
+
+//Position Strategy (activate also SetupPositionMode())
+
+        //controlled inclination (cs)
+        neck_ik.GetIK(cs,ori,lengths);
+        tp1=(lg0-lengths[0])/radio;
+        tp2=(lg0-lengths[1])/radio;
+        tp3=(lg0-lengths[2])/radio;
+        m1.SetPosition(tp1);
+        m2.SetPosition(tp2);
+        m3.SetPosition(tp3);
+
+        cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
+
+//Position Strategy (activate also SetupPositionMode())
 
 /* Velocity local loops
         file << t << ",";
