@@ -41,7 +41,7 @@ int main ()
     OnlineSystemIdentification model(numOrder,denOrder,filter);
     SystemBlock sys;
 //    FPDBlock con;
-    PIDBlock con(1,0.01,0,dts);
+    PIDBlock con(0.1,0.5,0,dts);
 
 
     FPDTuner tuner(60,2);
@@ -63,7 +63,7 @@ int main ()
     CiA402Device m1 (31, &pm31, &sd31);
     m1.Reset();
     m1.SwitchOn();
-    m1.SetupPositionMode();
+    m1.SetupPositionMode(5);
 //    m1.Setup_Velocity_Mode(5);
 
 
@@ -73,7 +73,7 @@ int main ()
     CiA402Device m2 (32, &pm2, &sd32);
     m2.Reset();
     m2.SwitchOn();
-    m2.SetupPositionMode();
+    m2.SetupPositionMode(5);
 //    m2.Setup_Velocity_Mode(5);
 
     //m3
@@ -82,7 +82,7 @@ int main ()
     CiA402Device m3 (33, &pm3, &sd33);
     m3.Reset();
     m3.SwitchOn();
-    m3.SetupPositionMode();
+    m3.SetupPositionMode(5);
 //    m3.Setup_Velocity_Mode(5);
 
 
@@ -116,8 +116,8 @@ int main ()
     GeoInkinematics neck_ik(0.052,0.052,l0); //kinematics geometric
     vector<double> lengths(3);
 
-    double inc=20.0; //inclination tendon length
-    double ori=180*M_PI/180; //target orientation
+    double inc=10.0; //inclination tendon length
+    double ori=90*M_PI/180; //target orientation
     double da2=2*M_PI/3, da3=4*M_PI/3; //angle shift for tendons 2 and 3
 
     for (double t=0; t<6; t+=dts)
@@ -138,7 +138,7 @@ int main ()
 //    vector<double> inc(interval/dts);
 //    for i
 
-    double interval=8; //in seconds
+    double interval=14; //in seconds
     for (double t=0;t<interval; t+=dts)
     {
 
@@ -168,7 +168,7 @@ int main ()
 
 
 
-//        cout << "ierror " <<  ierror  << ", cs " << cs << ", incSensor " << incSensor <<endl;
+        cout << "ierror " <<  ierror  << ", cs " << cs << ", incSensor " << incSensor <<endl;
 
 
 
@@ -197,7 +197,8 @@ int main ()
 //Position Strategy (activate also SetupPositionMode())
 
         //controlled inclination (cs)
-        neck_ik.GetIK(cs,ori,lengths);
+        cs = inc + (ierror > con);
+        neck_ik.GetIK(cs,ori*180/M_PI,lengths);
         tp1=(lg0-lengths[0])/radio;
         tp2=(lg0-lengths[1])/radio;
         tp3=(lg0-lengths[2])/radio;
@@ -205,7 +206,7 @@ int main ()
         m2.SetPosition(tp2);
         m3.SetPosition(tp3);
 
-        cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
+//        cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
 
 //Position Strategy (activate also SetupPositionMode())
 
@@ -256,9 +257,9 @@ int main ()
 
     cout << "mag: " << mag  << "phi: " << phi << endl ;
 
-    m1.SetVelocity(0);
-    m2.SetVelocity(0);
-    m3.SetVelocity(0);
+//    m1.SetVelocity(0);
+//    m2.SetVelocity(0);
+//    m3.SetVelocity(0);
 
 
 
@@ -274,11 +275,11 @@ int main ()
 //    m2.SetupPositionMode(1);
 //    m3.SetupPositionMode(1);
 //    sleep(1);
-//    m1.SetPosition(0);
-//    m2.SetPosition(0);
-//    m3.SetPosition(0);
+    m1.SetPosition(0);
+    m2.SetPosition(0);
+    m3.SetPosition(0);
 
-    sleep(2);
+    sleep(4);
 
     m1.SwitchOff();
     m2.SwitchOff();
