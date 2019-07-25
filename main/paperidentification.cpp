@@ -37,21 +37,22 @@ int main ()
 //   z - 0.9048
     SystemBlock filter(0.09516,0,- 0.9048,1);
 
-    int numOrder=0,denOrder=2;
-    OnlineSystemIdentification model(numOrder,denOrder,filter);
+    int numOrder=1,denOrder=2;
+    OnlineSystemIdentification model(numOrder, denOrder, filter, 0.98, 0.8 );
     SystemBlock sys;
-//    FPDBlock con;
-    PIDBlock con(0.1,0.5,0,dts);
+    FPDBlock con(1,1,1,dts);
+    PIDBlock intcon(0.1,0.05,0,dts);
+    double phi,mag,w=1;
 
 
-    FPDTuner tuner(60,2);
+    FPDTuner tuner(60,w);
 
 
 
 //    model.SetFilter(filter);
 
     string folder="../";
-    string mass="300g";
+    string mass="0g";
 
     ofstream file(folder+mass+".csv");
 
@@ -102,7 +103,7 @@ int main ()
     double ep3,ev3,cs3;
     double tp3,tv3,v3,p3;
 
-    double ierror, cs;
+    double ierror, ics, cs;
 
 
 
@@ -116,15 +117,27 @@ int main ()
     GeoInkinematics neck_ik(0.052,0.052,l0); //kinematics geometric
     vector<double> lengths(3);
 
-    double inc=10.0; //inclination tendon length
+    double inc=20.0; //inclination tendon length
     double incVel;
-    double ori=90*M_PI/180; //target orientation
+    double ori=0*M_PI/180; //target orientation
     double da2=2*M_PI/3, da3=4*M_PI/3; //angle shift for tendons 2 and 3
 
     //tilt initialization
     for (double t=0; t<6; t+=dts)
     {
     if (tilt.readSensor(incSensor,oriSensor)>=0) break;
+
+    }
+
+    //online id initialization
+    double rvel=0.1*((rand() % 10 + 1)-5);
+    for (double t=0; t<1; t+=dts)
+    {
+
+        model.UpdateSystem(rvel,incSensor);
+        m1.SetVelocity(rvel);
+        m2.SetVelocity(rvel);
+        m3.SetVelocity(rvel);
     }
 
 //    neck_ik.GetIK(inc,90,lengths);
@@ -134,13 +147,13 @@ int main ()
 
 //    cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
 
-    file << "time,tp1,p1,cs1,tp2,p2,cs2,tp3,p3,cs3" << endl;
+    file << "time,inc, incSensor, cs, mag, phi" << endl;
 
 
 //    vector<double> inc(interval/dts);
 //    for i
 
-    double interval=14; //in seconds
+    double interval=10; //in seconds
     for (double t=0;t<interval; t+=dts)
     {
 
@@ -159,18 +172,15 @@ int main ()
 
 //        cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
 //        cout << "incli_sen: " << incSensor << " , orient_sen: " << oriSensor << endl;
-        model.UpdateSystem(cs,incSensor);
 
-        model.GetSystemBlock(sys);
 
-//        tuner.TuneIsom(sys,con);
 
         //negative feedback
         ierror = inc - incSensor;
 
 
 
-        cout << "ierror " <<  ierror  << ", cs " << cs << ", incSensor " << incSensor <<endl;
+//        cout << "ierror " <<  ierror  << ", cs " << cs << ", incSensor " << incSensor <<endl;
 
 
 
@@ -179,17 +189,32 @@ int main ()
 //velocity strategy (activate also SetupVelocityMode())
 
 
+        ierror= ierror*M_PI/180; //degrees/sec to rad/sec
         //controller computes control signal
-        cs = ierror;// > con; //degrees/sec
+        cs = ierror > con;
+        ics = ierror > intcon;
 
-        cs= cs*M_PI/180;
+        if (!isnormal(cs)) cs = 0;
+
+        model.UpdateSystem(cs,incSensor);
+//        model.PrintZTransferFunction(dts);
+        model.GetSystemBlock(sys);
+        tuner.TuneIsom(sys,con);
+//        sys.GetMagnitudeAndPhase(dts,w,mag,phi);
+//        cout  << "con :" << cs << ", intcon :" << ics << endl;
+
+
+        file << t << "," << inc << "," << incSensor << "," << cs << ","<< endl;
+//        file << mag << "," << phi<< endl;
+
+
         cs1=(cs*cos(ori))/radius;
         cs2=(cs*cos(ori+da2))/radius;
         cs3=(cs*cos(ori+da3))/radius;
         m1.SetVelocity(cs1);
         m2.SetVelocity(cs2);
         m3.SetVelocity(cs3);
-        cout << "cs1 " << cs1 << ", cs2 " << cs2 << ", cs3 " << cs3 <<endl;
+//        cout << "cs1 " << cs1 << ", cs2 " << cs2 << ", cs3 " << cs3 <<endl;
 
 
 //velocity strategy (activate also SetupVelocityMode())
@@ -255,14 +280,14 @@ int main ()
 
 
     model.PrintZTransferFunction(dts);
-    double phi,mag,w=2;
+//    double phi,mag,w=2;
     model.GetMagnitudeAndPhase(dts,w,mag,phi);
 
     cout << "mag: " << mag  << "phi: " << phi << endl ;
 
-//    m1.SetVelocity(0);
-//    m2.SetVelocity(0);
-//    m3.SetVelocity(0);
+    m1.SetVelocity(0);
+    m2.SetVelocity(0);
+    m3.SetVelocity(0);
 
 
 
@@ -274,19 +299,19 @@ int main ()
 //    p1.PlotAndSave("../pos.csv");
 
 
-    m1.SetupPositionMode(5);
-    m2.SetupPositionMode(5);
-    m3.SetupPositionMode(5);
-    sleep(1);
-    m1.SetPosition(0);
-    m2.SetPosition(0);
-    m3.SetPosition(0);
+//    m1.SetupPositionMode(5);
+//    m2.SetupPositionMode(5);
+//    m3.SetupPositionMode(5);
+//    sleep(1);
+//    m1.SetPosition(0);
+//    m2.SetPosition(0);
+//    m3.SetPosition(0);
 
-    sleep(4);
+//    sleep(4);
 
-    m1.SwitchOff();
-    m2.SwitchOff();
-    m3.SwitchOff();
+//    m1.SwitchOff();
+//    m2.SwitchOff();
+//    m3.SwitchOff();
 
 
 
