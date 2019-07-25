@@ -120,6 +120,7 @@ int main ()
     }
 
     double inc=0.1*((rand() % 10 + 1)-5);
+    double ori=90*M_PI/180, da2=2*M_PI/3, da3=4*M_PI/3;
 //    neck_ik.GetIK(inc,90,lengths);
 //    tp1=(lg0-lengths[0])/radio;
 //    tp2=(lg0-lengths[1])/radio;
@@ -162,14 +163,14 @@ int main ()
         ierror = inc - incSensor;
 
         //controller computes control signal
-        cs = ierror;// > con;
+        cs = ierror + cs;// > con;
 
 
         //controlled inclination (cs)
-        neck_ik.GetIK(cs,90/**t*/,lengths);
-        tp1=(lg0-lengths[0])/radio;
-        tp2=(lg0-lengths[1])/radio;
-        tp3=(lg0-lengths[2])/radio;
+        neck_ik.GetIK(cs,0/**t*/,lengths);
+        tp1=(lg0-lengths[0]*cos(ori))/radio;
+        tp2=(lg0-lengths[1]*cos(ori+da2))/radio;
+        tp3=(lg0-lengths[2]*cos(ori+da3))/radio;
 
         cout << "tp1 " << tp1 << ", tp2 " << tp2 << ", tp3 " << tp3 <<endl;
 
